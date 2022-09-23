@@ -13,7 +13,7 @@
     <hr>
     <div th:if="${books.size()}>0">
         <h3>Книги:</h3>
-        <p th:each="book : ${books}" th:text="${book.getName()}"></p>
+        <p th:each="book : ${books}" th:text="${book.getName()}" th:style="${book.isExpired() ? 'color:red' : 'color:black'}"></p>
         <hr>
     </div>
     <div th:if="${books.size()}==0">

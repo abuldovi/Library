@@ -1,13 +1,19 @@
 package main.library.models;
 
+import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
-
+@Entity
+@Table(name = "Book")
 public class Book {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @NotEmpty(message = "Название не должно быть пустым")
@@ -16,28 +22,38 @@ public class Book {
     @Pattern(regexp = "[а-яА-ЯёЁa-zA-Z]+\\s+[а-яА-ЯёЁa-zA-Z]+", message = "Поле должно быть в формате \"Имя Фамилия\"")
     private String author;
 
-    private int year_published;
+    private int yearpublished;
+
+    @ManyToOne
+    @JoinColumn(name = "person_id", referencedColumnName = "id")
+    private Person owner;
+
+
+    private LocalDateTime timestamp;
 
     public Book(){}
 
-    public Book(int id, String name, String author, int year_published, Optional<Integer> person_id) {
+    public Book(int id, String name, String author, int yearpublished, Optional<Integer> person_id) {
         this.id = id;
         this.name = name;
         this.author = author;
-        this.year_published = year_published;
+        this.yearpublished = yearpublished;
+    }
+
+    @Transient
+    public boolean isExpired(){
+        System.out.println(timestamp.isBefore(LocalDateTime.now().minusDays(10)));
+        return timestamp.isBefore(LocalDateTime.now().minusDays(10));
     }
 
 
-    public int getid() {
-        return id;
+    public Person getOwner() {
+        return owner;
     }
 
-    public void setid(int id) {
-        this.id = id;
+    public void setOwner(Person owner) {
+        this.owner = owner;
     }
-
-
-
 
     public int getId() {
         return id;
@@ -63,13 +79,19 @@ public class Book {
         this.author = author;
     }
 
-    public int getYear_published() {
-        return year_published;
+    public int getyearpublished() {
+        return yearpublished;
     }
 
-    public void setYear_published(int year_published) {
-        this.year_published = year_published;
+    public void setyearpublished(int yearpublished) {
+        this.yearpublished = yearpublished;
     }
 
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 }

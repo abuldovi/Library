@@ -1,8 +1,15 @@
 package main.library.models;
 
+import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.List;
 
+@Entity
+@Table(name = "Person")
 public class Person {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Pattern(regexp = "[а-яА-ЯёЁa-zA-Z]+\\s+[а-яА-ЯёЁa-zA-Z]+\\s+[а-яА-ЯёЁa-zA-Z]+", message = "Поле должно быть в формате \"Фамилия Имя Отчество\"")
     @NotEmpty(message = "Имя не должно быть пустым")
@@ -12,6 +19,17 @@ public class Person {
     @Max(value = 2022, message = "Вы из будущего?")
     @Min(value = 1880, message = "А вы долгожитель")
     private int year_of_birth;
+
+    @OneToMany(mappedBy = "owner")
+    private List<Book> books;
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
+    }
 
     public int getId() {
         return id;
